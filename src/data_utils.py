@@ -1,9 +1,9 @@
 # ============================================================
-# data_utils.py — Data Loading & Preprocessing Pipeline
+# data_utils.py  Data Loading & Preprocessing Pipeline
 # ============================================================
 # Handles:
 #   1. Parsing CoNLL format (word\ttag per line, blank=sentence)
-#   2. Normalizing tag casing (B-LONG → B-long)
+#   2. Normalizing tag casing (B-LONG  B-long)
 #   3. Converting to HuggingFace Dataset objects
 #   4. Tokenization with subword alignment
 #   5. Dataset statistics reporting
@@ -55,7 +55,7 @@ def parse_conll_file(filepath: str, normalize_tags: bool = True) -> List[Dict]:
     current_words = []
     current_tags = []
     
-    console.print(f"  📄 Reading: [cyan]{filepath}[/cyan]")
+    console.print(f"   Reading: [cyan]{filepath}[/cyan]")
     
     with open(filepath, 'r', encoding='utf-8') as f:
         for line_num, line in enumerate(f, 1):
@@ -77,7 +77,7 @@ def parse_conll_file(filepath: str, normalize_tags: bool = True) -> List[Dict]:
                 if len(parts) == 2:
                     word, tag = parts
                     
-                    # Normalize tag casing (B-LONG → B-long, I-SHORT → I-short)
+                    # Normalize tag casing (B-LONG  B-long, I-SHORT  I-short)
                     if normalize_tags:
                         tag = normalize_bio_tag(tag)
                     
@@ -112,15 +112,15 @@ def normalize_bio_tag(tag: str) -> str:
     Normalize BIO tag to consistent lowercase format.
     
     Examples:
-        'B-LONG'  → 'B-long'
-        'I-SHORT' → 'I-short'
-        'B-short' → 'B-short' (already normalized)
-        'O'       → 'O'
+        'B-LONG'   'B-long'
+        'I-SHORT'  'I-short'
+        'B-short'  'B-short' (already normalized)
+        'O'        'O'
     """
     if tag == 'O' or tag == 'o':
         return 'O'
     
-    # Split on first hyphen: 'B-LONG' → ['B', 'LONG']
+    # Split on first hyphen: 'B-LONG'  ['B', 'LONG']
     if '-' in tag:
         prefix, entity_type = tag.split('-', 1)
         prefix = prefix.upper()       # B or I
@@ -171,7 +171,7 @@ def print_dataset_summary(all_stats: List[Dict]):
     """Print a rich formatted table summarizing all dataset splits."""
     
     console.print("\n" + "-" * 62)
-    console.print("  📊 [bold cyan]DATASET STATISTICS[/bold cyan]")
+    console.print("   [bold cyan]DATASET STATISTICS[/bold cyan]")
     console.print("-" * 62)
     
     # -- Summary Table --
@@ -198,7 +198,7 @@ def print_dataset_summary(all_stats: List[Dict]):
     console.print(table)
     
     # -- Tag Distribution for first split --
-    console.print("\n  📋 [bold]Tag Distribution (Train):[/bold]")
+    console.print("\n   [bold]Tag Distribution (Train):[/bold]")
     train_stats = all_stats[0]
     for tag, count in sorted(train_stats["tag_distribution"].items()):
         pct = count / train_stats["num_tokens"] * 100
@@ -271,16 +271,16 @@ class NERDataset(Dataset):
         
         for word_id in word_ids:
             if word_id is None:
-                # Special tokens ([CLS], [SEP], [PAD]) → ignore
+                # Special tokens ([CLS], [SEP], [PAD])  ignore
                 aligned_labels.append(-100)
             elif word_id != previous_word_id:
-                # First subword of a new word → use the word's label
+                # First subword of a new word  use the word's label
                 if word_id < len(tags):
                     aligned_labels.append(self.label2id.get(tags[word_id], 0))
                 else:
                     aligned_labels.append(-100)
             else:
-                # Continuation subword → ignore (set to -100)
+                # Continuation subword  ignore (set to -100)
                 aligned_labels.append(-100)
             
             previous_word_id = word_id
@@ -298,7 +298,7 @@ class NERDataset(Dataset):
 
 def build_label_mappings(label_list: List[str]) -> Tuple[Dict[str, int], Dict[int, str]]:
     """
-    Build bidirectional label ↔ id mappings.
+    Build bidirectional label  id mappings.
     
     Args:
         label_list: List of unique tags (e.g., ["O", "B-short", ...])
@@ -331,7 +331,7 @@ def load_and_prepare_data(config, tokenizer):
          label2id, id2label, test_sentences)
     """
     console.print("\n----------------------------------------------------------------")
-    console.print("-        📦 [bold cyan]STEP 1: Loading & Preprocessing Data[/bold cyan]              -")
+    console.print("-         [bold cyan]STEP 1: Loading & Preprocessing Data[/bold cyan]              -")
     console.print("----------------------------------------------------------------\n")
     
     start_time = time.time()
@@ -350,7 +350,7 @@ def load_and_prepare_data(config, tokenizer):
     
     # -- Build label mappings --
     label2id, id2label = build_label_mappings(config.data.label_list)
-    console.print(f"  🏷️  Label mapping: {label2id}\n")
+    console.print(f"    Label mapping: {label2id}\n")
     
     # -- Create NERDataset objects --
     console.print("  [bold]Tokenizing datasets...[/bold]")
@@ -388,7 +388,7 @@ def load_and_prepare_data(config, tokenizer):
 def verify_dataset_sample(dataset: NERDataset, tokenizer, id2label: Dict, n: int = 3):
     """Print a few samples from the dataset for visual verification."""
     
-    console.print("  🔍 [bold]Sample verification:[/bold]\n")
+    console.print("   [bold]Sample verification:[/bold]\n")
     
     for i in range(min(n, len(dataset))):
         sample = dataset[i]

@@ -24,6 +24,8 @@ Ultimately, the full fine-tuning of the smaller model yielded better domain adap
 - `colab_train.py` - Google Colab specific script for training with Google Drive checkpointing
 - `run_training.py` - Main script for running training pipelines locally
 - `test_inference.py` - An interactive terminal script used to test the trained model on custom sentences
+- `evaluate_baseline.py` - A script to evaluate the completely untrained model to establish a zero-shot baseline.
+- `final_presentation_demo.py` - A comprehensive presentation script that compares the untrained and trained models side-by-side.
 
 ## How to Run
 
@@ -37,6 +39,18 @@ python run_training.py --mode full
 If you want to test the trained model live in your terminal, run the inference script. It will first run through hardcoded test cases and then open an interactive loop where you can type your own sentences.
 ```bash
 python test_inference.py
+```
+
+### 3. Running the Final Presentation Demo
+To see a complete side-by-side comparison of the untrained model versus the fine-tuned model, run the final presentation script. This will print the project summary, show the metrics comparison, run automated tests, and allow you to test custom sentences interactively.
+```bash
+python final_presentation_demo.py
+```
+
+### 4. Evaluating the Zero-Shot Baseline
+To prove the effectiveness of the fine-tuning, you can evaluate the raw, untrained model using the baseline script. This will output a near 0% F1 score, demonstrating that the model could not perform the task prior to our training pipeline.
+```bash
+python evaluate_baseline.py
 ```
 
 ## Results & Evaluation

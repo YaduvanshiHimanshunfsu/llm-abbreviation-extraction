@@ -26,6 +26,12 @@ The central execution script. Parses command line arguments, instantiates the co
 - test_inference.py
 A standalone testing script that loads the final safetensors weights and tokenizer. It provides an interactive terminal loop allowing users to input raw sentences, passing them through the model, and extracting the predicted BIO tags in real-time.
 
+- evaluate_baseline.py
+A script designed to evaluate the entirely untrained model on the test dataset. This establishes a zero-shot baseline, proving the necessity of the fine-tuning process by outputting near 0% F1 scores.
+
+- final_presentation_demo.py
+A comprehensive demonstration script. It loads both the untrained baseline model and the fine-tuned model simultaneously, allowing side-by-side comparison of automated tests and custom interactive inputs.
+
 3. Workflow Diagram
 
 [ Raw Text Data ]
@@ -66,3 +72,9 @@ $ python run_training.py --mode full
 
 To run the interactive inference loop:
 $ python test_inference.py
+
+To establish the zero-shot baseline metrics:
+$ python evaluate_baseline.py
+
+To run the final presentation demonstration comparing both models:
+$ python final_presentation_demo.py

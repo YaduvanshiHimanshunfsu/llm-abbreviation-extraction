@@ -1,5 +1,5 @@
 # ============================================================
-# evaluator.py — Test Set Evaluation & Comparison
+# evaluator.py  Test Set Evaluation & Comparison
 # ============================================================
 # Handles:
 #   1. Running inference on test set
@@ -52,7 +52,7 @@ def predict_on_test(
     Returns:
         (true_labels, pred_labels, filtered_sentences)
     """
-    console.print("\n  🔮 Running inference on test set...")
+    console.print("\n   Running inference on test set...")
     start_time = time.time()
     
     # Get raw predictions
@@ -116,7 +116,7 @@ def evaluate_predictions(
     """
     
     console.print("----------------------------------------------------------------")
-    console.print(f"-     📊 [bold cyan]EVALUATION RESULTS — {mode.upper()} Fine-Tuning[/bold cyan]              -")
+    console.print(f"-      [bold cyan]EVALUATION RESULTS  {mode.upper()} Fine-Tuning[/bold cyan]              -")
     console.print("----------------------------------------------------------------\n")
     
     # -- Overall Metrics --
@@ -219,7 +219,7 @@ def save_predictions(
                 pred_tag = preds[i] if i < len(preds) else "O"
                 
                 # Mark incorrect predictions
-                marker = "  ✗" if true_tag != pred_tag else ""
+                marker = "  " if true_tag != pred_tag else ""
                 f.write(f"{word}\t{true_tag}\t{pred_tag}{marker}\n")
             
             f.write("\n")  # Blank line between sentences
@@ -241,7 +241,7 @@ def compare_results(lora_metrics: Dict, full_metrics: Optional[Dict] = None):
         full_metrics: Metrics dict from Full FT evaluation (optional)
     """
     console.print("\n----------------------------------------------------------------")
-    console.print("-           📊 [bold cyan]COMPARISON: LoRA vs Full Fine-Tuning[/bold cyan]           -")
+    console.print("-            [bold cyan]COMPARISON: LoRA vs Full Fine-Tuning[/bold cyan]           -")
     console.print("----------------------------------------------------------------\n")
     
     table = Table(show_header=True, header_style="bold magenta")

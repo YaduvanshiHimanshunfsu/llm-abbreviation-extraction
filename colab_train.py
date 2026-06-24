@@ -1,5 +1,5 @@
 # ============================================================
-# colab_train.py — Single Colab Entry Point (Resilient)
+# colab_train.py  Single Colab Entry Point (Resilient)
 # ============================================================
 # Run this ONE script in Google Colab to do EVERYTHING:
 #   1. Mount Google Drive
@@ -20,7 +20,7 @@
 # Cell 2:
 #   !python colab_train.py --mode lora --epochs 5
 #
-# IF COLAB DISCONNECTS — just re-run Cell 1 & Cell 2!
+# IF COLAB DISCONNECTS  just re-run Cell 1 & Cell 2!
 # Training auto-resumes from the last saved checkpoint.
 # ============================================================
 
@@ -63,7 +63,7 @@ def print_box(title, lines, char="-"):
     width = 62
     print(f"\n{'-' + char * width + '-'}")
     print(f"-  {title:<{width - 2}}-")
-    print(f"{'╠' + char * width + '╣'}")
+    print(f"{'' + char * width + ''}")
     for line in lines:
         print(f"-  {line:<{width - 2}}-")
     print(f"{'-' + char * width + '-'}\n")
@@ -73,7 +73,7 @@ def print_step(step_num, total, description, status=""):
     """Print a numbered step with status."""
     bar_width = 20
     filled = int(bar_width * step_num / total)
-    bar = "-" * filled + "░" * (bar_width - filled)
+    bar = "-" * filled + "" * (bar_width - filled)
     print(f"  [{bar}] Step {step_num}/{total}: {description} {status}")
 
 
@@ -106,10 +106,10 @@ if IS_COLAB:
     else:
         print("  Google Drive is mounted")
 else:
-    print("  ℹ️  Running locally (not on Colab)")
+    print("    Running locally (not on Colab)")
 
 # -- Check GPU --
-print("\n  🔍 Checking GPU...")
+print("\n   Checking GPU...")
 try:
     import torch
     if torch.cuda.is_available():
@@ -117,10 +117,10 @@ try:
         gpu_mem = torch.cuda.get_device_properties(0).total_memory / (1024**3)
         print(f"  GPU: {gpu_name} ({gpu_mem:.1f} GB)")
     else:
-        print("  ⚠️  No GPU detected! Training will be very slow.")
-        print("     Go to Runtime → Change runtime type → T4 GPU")
+        print("    No GPU detected! Training will be very slow.")
+        print("     Go to Runtime  Change runtime type  T4 GPU")
 except ImportError:
-    print("  ⚠️  PyTorch not installed yet (will be installed in next step)")
+    print("    PyTorch not installed yet (will be installed in next step)")
 
 
 # ------------------------------------------------------------
@@ -129,7 +129,7 @@ except ImportError:
 
 if not args.skip_install:
     print("\n" + "=" * 62)
-    print("  📦 PHASE 2: Installing Dependencies (~2-3 min)")
+    print("   PHASE 2: Installing Dependencies (~2-3 min)")
     print("=" * 62 + "\n")
     
     install_start = time.time()
@@ -150,19 +150,19 @@ if not args.skip_install:
             capture_output=True, text=True
         )
         if result.returncode != 0:
-            print(f"    ⚠️  Warning: {result.stderr[:200]}")
+            print(f"      Warning: {result.stderr[:200]}")
         else:
             print(f"    Done")
     
     install_time = time.time() - install_start
     print(f"\n  All dependencies installed in {install_time:.0f}s")
 else:
-    print("\n  ⏭️  Skipping installation (--skip-install)")
+    print("\n    Skipping installation (--skip-install)")
 
 # -- Re-import torch after potential install --
 import torch
-print(f"\n  🔧 PyTorch {torch.__version__}")
-print(f"  🔧 CUDA: {'' + torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'Not available'}")
+print(f"\n   PyTorch {torch.__version__}")
+print(f"   CUDA: {'' + torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'Not available'}")
 
 
 # ------------------------------------------------------------
@@ -184,7 +184,7 @@ for fname in ['train.txt', 'valid.txt', 'test.txt']:
     if os.path.exists(src) and not os.path.exists(dst):
         shutil.copy2(src, dst)
         size_mb = os.path.getsize(src) / (1024 * 1024)
-        print(f"  Copied {src} → {dst} ({size_mb:.1f} MB)")
+        print(f"  Copied {src}  {dst} ({size_mb:.1f} MB)")
     elif os.path.exists(dst):
         size_mb = os.path.getsize(dst) / (1024 * 1024)
         print(f"  {dst} exists ({size_mb:.1f} MB)")
@@ -205,11 +205,11 @@ if IS_COLAB:
     for subdir in ["lora", "full_ft"]:
         path = os.path.join(DRIVE_RESULTS, subdir)
         os.makedirs(path, exist_ok=True)
-    print(f"\n  ☁️  Output dir (Drive): {DRIVE_RESULTS}")
+    print(f"\n    Output dir (Drive): {DRIVE_RESULTS}")
 else:
     os.makedirs("results/lora", exist_ok=True)
     os.makedirs("results/full_ft", exist_ok=True)
-    print(f"\n  💻 Output dir (local): ./results/")
+    print(f"\n   Output dir (local): ./results/")
 
 
 # ------------------------------------------------------------
@@ -217,7 +217,7 @@ else:
 # ------------------------------------------------------------
 
 print("\n" + "=" * 62)
-print("  🔍 PHASE 4: Scanning for Existing Checkpoints")
+print("   PHASE 4: Scanning for Existing Checkpoints")
 print("=" * 62 + "\n")
 
 from src.trainer import list_all_checkpoints
@@ -231,13 +231,13 @@ def show_checkpoints(mode_name, dir_path):
             name = os.path.basename(ckpt["path"])
             epoch = ckpt.get("epoch", "?")
             loss = ckpt.get("last_loss", "?")
-            print(f"     └- {name}  (epoch {epoch}, loss {loss}, {ckpt['size_mb']:.0f} MB)")
+            print(f"     - {name}  (epoch {epoch}, loss {loss}, {ckpt['size_mb']:.0f} MB)")
         
         latest = checkpoints[-1]
-        print(f"  ➡️  Will resume from: {os.path.basename(latest['path'])}")
+        print(f"    Will resume from: {os.path.basename(latest['path'])}")
         return True
     else:
-        print(f"  {mode_name}: No checkpoints — will start fresh")
+        print(f"  {mode_name}: No checkpoints  will start fresh")
         return False
 
 if IS_COLAB:
@@ -255,7 +255,7 @@ if args.mode in ["full", "both"]:
     has_full_ckpt = show_checkpoints("Full FT", os.path.join(base, "full_ft"))
 
 if args.no_resume:
-    print("\n  ⚠️  --no-resume flag set: will start training from scratch")
+    print("\n    --no-resume flag set: will start training from scratch")
 
 
 # ------------------------------------------------------------
@@ -286,7 +286,7 @@ if args.batch_size:
 if args.smoke_test:
     config.training.num_epochs = 1
     config.colab.save_steps = 20
-    console.print("  [yellow]SMOKE TEST — 1 epoch, save every 20 steps[/yellow]\n")
+    console.print("  [yellow]SMOKE TEST  1 epoch, save every 20 steps[/yellow]\n")
 
 # -- Build the CLI command to forward to run_training.py --
 cmd = [sys.executable, "run_training.py", "--mode", args.mode, "--epochs", str(config.training.num_epochs)]
@@ -306,7 +306,7 @@ if args.batch_size:
 if args.smoke_test:
     cmd.append("--smoke-test")
 
-console.print(f"\n  🔧 [dim]Command: {' '.join(cmd)}[/dim]\n")
+console.print(f"\n   [dim]Command: {' '.join(cmd)}[/dim]\n")
 
 # -- Run the training pipeline --
 training_start = time.time()
@@ -328,7 +328,7 @@ else:
 total_session_time = time.time() - SESSION_START
 
 print("\n" + "-" * 62)
-print("  📊 SESSION SUMMARY")
+print("   SESSION SUMMARY")
 print("-" * 62)
 print(f"  Total Session Time:  {total_session_time/60:.1f} min ({total_session_time/3600:.2f} hours)")
 print(f"  Mode:                {args.mode.upper()}")
@@ -343,18 +343,18 @@ if args.mode in ["full", "both"]:
     show_checkpoints("Full FT", os.path.join(base, "full_ft"))
 
 # -- Show saved results --
-print(f"\n  📁 Results Location:")
+print(f"\n   Results Location:")
 if IS_COLAB:
     print(f"     {DRIVE_RESULTS}")
-    print(f"     (Saved to Google Drive — persists across sessions)")
+    print(f"     (Saved to Google Drive  persists across sessions)")
 else:
     print(f"     ./results/")
     print(f"     (Saved locally)")
 
 # -- Next steps --
 print(f"\n  Next Steps:")
-print(f"     • If training was interrupted, just re-run this script!")
-print(f"     • Training will auto-resume from the last checkpoint")
-print(f"     • To force a fresh start, use --no-resume")
-print(f"     • To download results: Cell 8 in COLAB_SETUP_GUIDE.md")
+print(f"      If training was interrupted, just re-run this script!")
+print(f"      Training will auto-resume from the last checkpoint")
+print(f"      To force a fresh start, use --no-resume")
+print(f"      To download results: Cell 8 in COLAB_SETUP_GUIDE.md")
 print("-" * 62 + "\n")

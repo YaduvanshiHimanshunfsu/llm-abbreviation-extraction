@@ -1,5 +1,5 @@
 # ============================================================
-# config.py — All Hyperparameters & Configuration
+# config.py  All Hyperparameters & Configuration
 # ============================================================
 # This file centralizes every tunable parameter so you can
 # adjust training without touching any other source file.
@@ -64,8 +64,8 @@ class TrainingConfig:
     """Configuration for the training loop."""
     
     # -- Model Selection --
-    # flan-t5-base (250M params) for LoRA — good balance of speed & quality
-    # flan-t5-small (77M params) for Full FT — fits in T4 memory
+    # flan-t5-base (250M params) for LoRA  good balance of speed & quality
+    # flan-t5-small (77M params) for Full FT  fits in T4 memory
     model_name_lora: str = "google/flan-t5-base"
     model_name_full: str = "google/flan-t5-small"
     
@@ -123,7 +123,7 @@ class ColabConfig:
     
     # -- Checkpoint frequency --
     # With ~500 steps/epoch (16K samples, batch=16, grad_accum=2):
-    #   save_steps=200 → ~6 saves/epoch → lose at most ~3 min of work
+    #   save_steps=200  ~6 saves/epoch  lose at most ~3 min of work
     save_steps: int = 200
     
     # -- Time-limit safety --

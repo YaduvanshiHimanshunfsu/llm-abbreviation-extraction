@@ -1,5 +1,5 @@
 # ============================================================
-# trainer.py — Training Loop with Colab-Resilient Checkpointing
+# trainer.py  Training Loop with Colab-Resilient Checkpointing
 # ============================================================
 # Handles:
 #   1. HuggingFace Trainer setup for both LoRA and Full FT
@@ -91,7 +91,7 @@ def build_compute_metrics_fn(id2label: Dict[int, str]):
             
             for pred_id, label_id in zip(pred_seq, label_seq):
                 if label_id != -100:
-                    # Valid token — convert to tag string
+                    # Valid token  convert to tag string
                     true_sent.append(id2label.get(label_id, "O"))
                     pred_sent.append(id2label.get(pred_id, "O"))
             
@@ -214,7 +214,7 @@ def list_all_checkpoints(output_dir: str) -> list:
 
 
 # ------------------------------------------------------------
-#  TimeLimitCallback — Graceful Colab Shutdown
+#  TimeLimitCallback  Graceful Colab Shutdown
 # ------------------------------------------------------------
 
 class TimeLimitCallback(TrainerCallback):
@@ -250,14 +250,14 @@ class TimeLimitCallback(TrainerCallback):
         
         console.print(f"\n   [bold]Time Limit:[/bold] [cyan]{self.max_hours:.1f} hours[/cyan] "
                       f"({self.max_seconds/60:.0f} min)")
-        console.print(f"  🎯 [bold]Total Steps:[/bold] [cyan]{self.total_steps:,}[/cyan]")
+        console.print(f"   [bold]Total Steps:[/bold] [cyan]{self.total_steps:,}[/cyan]")
         
         est_time_per_step = None
         if self.total_steps > 0 and self.max_hours > 0:
             est_time_per_step = self.max_seconds / self.total_steps
-            console.print(f"  📊 [bold]Max time/step:[/bold] [cyan]{est_time_per_step:.2f}s[/cyan]")
+            console.print(f"   [bold]Max time/step:[/bold] [cyan]{est_time_per_step:.2f}s[/cyan]")
         
-        console.print(f"  🕐 [bold]Started at:[/bold]  [cyan]{datetime.now().strftime('%H:%M:%S')}[/cyan]\n")
+        console.print(f"   [bold]Started at:[/bold]  [cyan]{datetime.now().strftime('%H:%M:%S')}[/cyan]\n")
     
     def on_step_end(self, args, state: TrainerState, control: TrainerControl, **kwargs):
         """Check time limit and print periodic status updates."""
@@ -313,13 +313,13 @@ class TimeLimitCallback(TrainerCallback):
             pct_steps = (steps_done / max(self.total_steps, 1)) * 100
             bar_width = 25
             filled = int(bar_width * pct_steps / 100)
-            bar = "-" * filled + "░" * (bar_width - filled)
+            bar = "-" * filled + "" * (bar_width - filled)
             
             console.print(
                 f"  [{bar}] {pct_steps:5.1f}%"
                 f"  Step {steps_done:>5}/{self.total_steps}"
                 f"  Epoch {current_epoch:.1f}/{self.total_epochs}"
-                f"  ⏱ {elapsed_min:.0f}m/{self.max_hours*60:.0f}m"
+                f"   {elapsed_min:.0f}m/{self.max_hours*60:.0f}m"
                 f"  ETA: {eta_min:.0f}m ({est_finish_time.strftime('%H:%M')})"
                 f"{loss_info}{gpu_info}",
                 style="dim"
@@ -329,7 +329,7 @@ class TimeLimitCallback(TrainerCallback):
         if pct_time_used >= 75 and not self.warned_75:
             self.warned_75 = True
             console.print(
-                f"\n  ⚠️  [bold yellow]TIME WARNING:[/bold yellow] "
+                f"\n    [bold yellow]TIME WARNING:[/bold yellow] "
                 f"[yellow]75% of time limit used ({elapsed_min:.0f}/{self.max_hours*60:.0f} min). "
                 f"~{remaining_min:.0f} min remaining.[/yellow]\n"
             )
@@ -338,15 +338,15 @@ class TimeLimitCallback(TrainerCallback):
         if pct_time_used >= 90 and not self.warned_90:
             self.warned_90 = True
             console.print(
-                f"\n  🚨 [bold red]TIME CRITICAL:[/bold red] "
+                f"\n   [bold red]TIME CRITICAL:[/bold red] "
                 f"[red]90% of time limit used ({elapsed_min:.0f}/{self.max_hours*60:.0f} min). "
                 f"Only ~{remaining_min:.0f} min remaining![/red]\n"
             )
         
-        # -- Time limit reached — graceful shutdown --
+        # -- Time limit reached  graceful shutdown --
         if elapsed >= self.max_seconds:
             console.print(
-                f"\n  🛑 [bold red]TIME LIMIT REACHED![/bold red] "
+                f"\n   [bold red]TIME LIMIT REACHED![/bold red] "
                 f"({elapsed_hours:.1f}h / {self.max_hours:.1f}h)\n"
                 f"     [red]Saving final checkpoint and stopping gracefully...[/red]\n"
                 f"     [dim]Training completed {steps_done}/{self.total_steps} steps "
@@ -378,17 +378,17 @@ class TimeLimitCallback(TrainerCallback):
             # Determine F1 quality indicator
             if f1 >= 0.8:
                 f1_style = "bold green"
-                indicator = "🟢"
+                indicator = ""
             elif f1 >= 0.5:
                 f1_style = "bold yellow"
-                indicator = "🟡"
+                indicator = ""
             else:
                 f1_style = "bold red"
-                indicator = "🔴"
+                indicator = ""
             
             console.print(f"\n  {'-' * 55}")
             console.print(
-                f"  📊 [bold]Eval @ step {state.global_step}[/bold] "
+                f"   [bold]Eval @ step {state.global_step}[/bold] "
                 f"(epoch {state.epoch:.1f}, {elapsed/60:.0f}m elapsed)"
             )
             console.print(
@@ -474,22 +474,22 @@ def print_training_banner(
     
     console.print(f"\n-{'-' * 60}-")
     console.print(f"-{'NER Fine-Tuning: Abbreviation Detection':^60}-")
-    console.print(f"╠{'-' * 60}╣")
+    console.print(f"{'-' * 60}")
     console.print(f"-  Model:        {model_name:<43}-")
     console.print(f"-  Mode:         {mode.upper():<43}-")
     console.print(f"-  GPU:          {gpu_name:<43}-")
     console.print(f"-  GPU Memory:   {gpu_mem:<43}-")
-    console.print(f"╠{'-' * 60}╣")
+    console.print(f"{'-' * 60}")
     console.print(f"-  Total Params:     {total_params:>12,}{' ' * 27}-")
     console.print(f"-  Trainable Params: {trainable_params:>12,}  ({trainable_pct:.2f}%){' ' * 15}-")
-    console.print(f"╠{'-' * 60}╣")
+    console.print(f"{'-' * 60}")
     console.print(f"-  Epochs:           {num_epochs:<6}{' ' * 33}-")
     console.print(f"-  Batch Size:       {batch_size} × {grad_accum} = {effective_batch:<4} (effective){' ' * 20}-")
     console.print(f"-  Learning Rate:    {lr:<10}{' ' * 29}-")
     console.print(f"-  Steps/Epoch:      {steps_per_epoch:<6}{' ' * 33}-")
     console.print(f"-  Total Steps:      {total_steps:<6}{' ' * 33}-")
     console.print(f"-  Est. Time:        {est_time:<20}{' ' * 19}-")
-    console.print(f"╠{'-' * 60}╣")
+    console.print(f"{'-' * 60}")
     console.print(f"-  Save Every:       {save_steps} steps (~{saves_per_epoch} saves/epoch){' ' * 18}-")
     console.print(f"-  Time Limit:       {max_hours:.1f} hours{' ' * 33}-")
     
@@ -515,7 +515,7 @@ def print_resume_status(output_dir: str, auto_resume: bool) -> Optional[str]:
     checkpoints = list_all_checkpoints(output_dir)
     
     if not checkpoints:
-        console.print("  [dim]No existing checkpoints found — starting fresh[/dim]\n")
+        console.print("  [dim]No existing checkpoints found  starting fresh[/dim]\n")
         return None
     
     # -- Display found checkpoints --
@@ -533,7 +533,7 @@ def print_resume_status(output_dir: str, auto_resume: bool) -> Optional[str]:
         is_latest = (i == len(checkpoints))
         name = os.path.basename(ckpt["path"])
         if is_latest:
-            name = f"→ {name}"
+            name = f" {name}"
         
         table.add_row(
             str(i),
@@ -551,14 +551,14 @@ def print_resume_status(output_dir: str, auto_resume: bool) -> Optional[str]:
     
     if auto_resume:
         console.print(
-            f"\n  [bold green]AUTO-RESUME ENABLED[/bold green] — "
+            f"\n  [bold green]AUTO-RESUME ENABLED[/bold green]  "
             f"will continue from [cyan]{os.path.basename(latest_path)}[/cyan] "
             f"(step {latest['step']:,}, epoch {latest.get('epoch', '?')})\n"
         )
         return latest_path
     else:
         console.print(
-            f"\n  ℹ️  [dim]Auto-resume disabled. Remove --no-resume to resume from "
+            f"\n    [dim]Auto-resume disabled. Remove --no-resume to resume from "
             f"{os.path.basename(latest_path)}[/dim]\n"
         )
         return None
@@ -606,11 +606,11 @@ def train_model(
     is_colab = os.path.exists("/content/drive")
     if is_colab:
         base_output = config.colab.drive_output_dir
-        console.print(f"  ☁️  [bold green]Google Drive detected[/bold green] — "
+        console.print(f"    [bold green]Google Drive detected[/bold green]  "
                       f"checkpoints will be saved to Drive")
     else:
         base_output = "results"
-        console.print(f"  💻 [dim]Local mode — checkpoints saved to ./results/[/dim]")
+        console.print(f"   [dim]Local mode  checkpoints saved to ./results/[/dim]")
     
     output_dir = os.path.join(base_output, "lora" if mode == "lora" else "full_ft")
     os.makedirs(output_dir, exist_ok=True)
@@ -626,7 +626,7 @@ def train_model(
         model_name = config.training.model_name_full
     
     # -- Check for existing checkpoints --
-    console.print(f"\n  🔍 [bold]Scanning for existing checkpoints...[/bold]")
+    console.print(f"\n   [bold]Scanning for existing checkpoints...[/bold]")
     resume_checkpoint = print_resume_status(output_dir, config.colab.auto_resume)
     
     # -- Count parameters for banner --
@@ -777,7 +777,7 @@ def train_model(
     
     train_start_time = time.time()
     
-    # Run training — with or without resume
+    # Run training  with or without resume
     train_result = trainer.train(resume_from_checkpoint=resume_checkpoint)
     
     train_end_time = time.time()
@@ -785,7 +785,7 @@ def train_model(
     training_time_min = training_time_sec / 60
     
     # ----------------------------------------------------------
-    #  Training Complete — Report Results
+    #  Training Complete  Report Results
     # ----------------------------------------------------------
     
     console.print(f"\n  {'-' * 55}")
@@ -799,11 +799,11 @@ def train_model(
     if pct_complete >= 99.5:
         console.print(f"    Status:            [bold green]All epochs completed![/bold green]")
     else:
-        console.print(f"    Status:            [bold yellow] {pct_complete:.0f}% complete — "
+        console.print(f"    Status:            [bold yellow] {pct_complete:.0f}% complete  "
                       f"resume later to finish[/bold yellow]")
     
     # -- Run final validation --
-    console.print(f"\n  📊 Running final validation...")
+    console.print(f"\n   Running final validation...")
     eval_results = trainer.evaluate()
     
     console.print(f"    Val Precision:  [green]{eval_results.get('eval_precision', 0):.4f}[/green]")

@@ -1,5 +1,5 @@
 # ============================================================
-# run_training.py — Main Entry Point (Colab-Resilient)
+# run_training.py  Main Entry Point (Colab-Resilient)
 # ============================================================
 # This is the single script you run to execute the full pipeline:
 #   1. Load & preprocess data
@@ -96,7 +96,7 @@ def print_checkpoint_status(mode: str, config):
         for ckpt in checkpoints:
             name = os.path.basename(ckpt["path"])
             console.print(
-                f"    └- {name}  "
+                f"    - {name}  "
                 f"(step {ckpt['step']:,}, epoch {ckpt.get('epoch', '?')}, "
                 f"loss {ckpt.get('last_loss', '?')}, {ckpt['size_mb']:.0f} MB)"
             )
@@ -213,7 +213,7 @@ def run_pipeline(mode: str, config: Config):
 
 
 def main():
-    """Main entry point — parse args and run the pipeline."""
+    """Main entry point  parse args and run the pipeline."""
     
     parser = argparse.ArgumentParser(
         description="Fine-tune LLM for Abbreviation/Acronym NER (Colab-Resilient)"
@@ -287,7 +287,7 @@ def main():
     if args.smoke_test:
         config.training.num_epochs = 1
         config.colab.save_steps = 20
-        console.print("  [yellow]SMOKE TEST MODE — 1 epoch, save every 20 steps[/yellow]\n")
+        console.print("  [yellow]SMOKE TEST MODE  1 epoch, save every 20 steps[/yellow]\n")
     
     # -- Print header --
     print_header()
@@ -357,7 +357,7 @@ def main():
                 json.dump(comparison, f, indent=2, default=str)
             console.print("  Comparison saved to: [green]results/comparison_report.json[/green]\n")
         else:
-            console.print("\n   [yellow]Comparison skipped — not all training runs completed.[/yellow]")
+            console.print("\n   [yellow]Comparison skipped  not all training runs completed.[/yellow]")
             console.print("     Resume incomplete runs and then compare.\n")
     
     # -- Final message --
@@ -366,9 +366,9 @@ def main():
     console.print("----------------------------------------------------------------")
     console.print("")
     console.print("  [bold]Tips:[/bold]")
-    console.print("     • If training was interrupted, run without [cyan]--no-resume[/cyan] to continue automatically")
-    console.print("     • Logs and checkpoints are safe in your Drive. (Colab) or ./results/ (local)")
-    console.print("     • Use [cyan]--max-hours 2.0[/cyan] for shorter Colab sessions")
+    console.print("      If training was interrupted, run without [cyan]--no-resume[/cyan] to continue automatically")
+    console.print("      Logs and checkpoints are safe in your Drive. (Colab) or ./results/ (local)")
+    console.print("      Use [cyan]--max-hours 2.0[/cyan] for shorter Colab sessions")
     console.print("")
 
 

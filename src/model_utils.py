@@ -1,5 +1,5 @@
 # ============================================================
-# model_utils.py — Model Loading & Configuration
+# model_utils.py  Model Loading & Configuration
 # ============================================================
 # Handles:
 #   1. Loading pre-trained models (Flan-T5)
@@ -19,12 +19,16 @@ from transformers import (
     AutoModelForTokenClassification,
     BitsAndBytesConfig,
 )
-from peft import (
-    LoraConfig,
-    get_peft_model,
-    prepare_model_for_kbit_training,
-    TaskType,
-)
+try:
+    from peft import (
+        LoraConfig,
+        get_peft_model,
+        prepare_model_for_kbit_training,
+        TaskType
+    )
+except ImportError:
+    # PEFT is only needed for LoRA training. It is safe to ignore if running full fine-tuning or inference locally.
+    pass
 from rich.console import Console
 from rich.table import Table
 
@@ -45,7 +49,7 @@ def load_tokenizer(model_name: str) -> AutoTokenizer:
     Returns:
         Configured tokenizer
     """
-    console.print(f"  📝 Loading tokenizer: [cyan]{model_name}[/cyan]")
+    console.print(f"   Loading tokenizer: [cyan]{model_name}[/cyan]")
     
     tokenizer = AutoTokenizer.from_pretrained(
         model_name,
@@ -91,7 +95,7 @@ def load_model_for_ner(
         (model, tokenizer) tuple
     """
     console.print(f"\n----------------------------------------------------------------")
-    console.print(f"-        🤖 [bold cyan]STEP 2: Loading Model ({mode.upper()})[/bold cyan]                      -")
+    console.print(f"-         [bold cyan]STEP 2: Loading Model ({mode.upper()})[/bold cyan]                      -")
     console.print(f"----------------------------------------------------------------\n")
     
     num_labels = len(label2id)
@@ -156,7 +160,7 @@ def load_model_for_ner(
         #  Full Fine-Tuning: All parameters trainable in FP16
         # --------------------------------------------------------
         
-        console.print(f"\n  🔧 [bold yellow]Loading model for full fine-tuning (FP16)...[/bold yellow]")
+        console.print(f"\n   [bold yellow]Loading model for full fine-tuning (FP16)...[/bold yellow]")
         
         model = AutoModelForTokenClassification.from_pretrained(
             model_name,
@@ -209,7 +213,7 @@ def print_model_summary(
     trainable_pct = (trainable_params / total_params) * 100 if total_params > 0 else 0
     
     console.print(f"\n  ---------------------------------------------------")
-    console.print(f"  📊 [bold]MODEL SUMMARY[/bold]")
+    console.print(f"   [bold]MODEL SUMMARY[/bold]")
     console.print(f"  ---------------------------------------------------")
     console.print(f"    Model:            {model_name}")
     console.print(f"    Mode:             {mode.upper()}")
@@ -276,4 +280,4 @@ def save_model(model, tokenizer, output_dir: str, mode: str = "lora"):
             size = os.path.getsize(fpath)
             total_size += size
     
-    console.print(f"  📦 Total saved size: [cyan]{total_size / (1024**2):.1f} MB[/cyan]\n")
+    console.print(f"   Total saved size: [cyan]{total_size / (1024**2):.1f} MB[/cyan]\n")
