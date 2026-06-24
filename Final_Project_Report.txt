@@ -1,0 +1,41 @@
+Project Report: LLM Fine-Tuning for Abbreviation Extraction
+Name: Himanshu Yadav
+College: National Forensic Science University, Tripura Campus
+Date: 24/06/2026
+
+1. PROJECT OBJECTIVE
+The primary goal of this project was to fine-tune a pre-trained Large Language Model (LLM) to extract abbreviations, acronyms, and their corresponding long-form definitions from raw text. The problem was formulated as a token classification (Named Entity Recognition) task using the BIO format, where tokens were tagged as B-short, I-short, B-long, I-long, or O.
+
+2. METHODOLOGY & MODELS TESTED
+We utilized the HuggingFace transformers library to train models on the CoNLL-formatted datasets. We experimented with two different fine-tuning paradigms:
+
+Method A: LoRA Fine-Tuning (Low-Rank Adaptation)
+- Base Model: google/flan-t5-base (250M parameters)
+- Approach: The base model weights were frozen to save memory, and we trained a small adapter matrix injected into the attention layers.
+- Trainable Parameters: 593,669 (0.77% of the model).
+
+Method B: Full Fine-Tuning
+- Base Model: google/flan-t5-small (35M parameters)
+- Approach: Standard fine-tuning where all weights across the entire architecture were updated during backpropagation.
+- Trainable Parameters: 35,335,365 (100% of the model).
+
+3. TRAINING OPTIMIZATIONS
+To handle tokenization efficiently, we implemented dynamic padding using DataCollatorForTokenClassification. Instead of statically padding every sentence to the absolute maximum length (which wastes computational resources), sentences were dynamically padded to the length of the longest sequence in their specific batch.
+
+4. EVALUATION & RESULTS
+After training, the models were evaluated against the test.txt dataset. The full fine-tuning of the smaller model performed the best on our specific dataset.
+
+Final Evaluation Metrics:
+- Recall: 79.12%
+- Precision: 28.65%
+- F1-Score: 42.07%
+
+5. ANALYSIS & DISCUSSION
+The model demonstrated a strong recall metric (~80%), indicating that it successfully identifies the vast majority of genuine abbreviations present in the text. This is typically the most desired behavior in domains like medicine where false negatives (missing an abbreviation) are costly.
+
+However, the precision (28.65%) was notably low. Upon investigating the test dataset, we found a severe class imbalance: there were 1,824 'short' abbreviations but only 25 'long' definitions. Because the model was evaluated on a dataset almost entirely lacking one of its primary target classes, it struggled to balance its predictions, leading to over-generation. Furthermore, seq2seq models like T5 inherently struggle with strict token classification compared to encoder-only models. 
+
+Future improvements would involve balancing the training and testing datasets and transitioning the architecture to an encoder-only model like DeBERTa.
+
+6. CONCLUSION
+The project successfully established an end-to-end NLP pipeline from data ingestion to model inference. The deployed test_inference.py script validates that the model can successfully read custom user input, tokenize it, and extract relational abbreviations in real-time.

@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Project specific huge files
+results/
+temp.zip
+temp_docx/
+
+# IDEs
+.vscode/
+.idea/

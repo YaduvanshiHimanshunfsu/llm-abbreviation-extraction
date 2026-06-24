@@ -1,0 +1,68 @@
+Project Technical Documentation: NER Pipeline for Abbreviation Extraction
+
+1. Environment & Dependencies
+Language: Python 3.10+
+Frameworks: PyTorch, HuggingFace Transformers, Datasets, PEFT
+Hardware: Developed locally, trained on Google Colab (NVIDIA T4 GPU).
+
+2. Codebase Architecture
+The codebase is modularized to separate configuration, data processing, and training logic.
+
+- src/config.py
+Contains all dataclasses defining the hyperparameters for the dataset, LoRA, and full fine-tuning loops.
+
+- src/data_utils.py
+Handles data ingestion and preprocessing. It reads CoNLL-formatted .txt files, tokenizes the sequences using the model's native tokenizer, aligns the BIO tags with the generated subwords, and implements dynamic padding via DataCollatorForTokenClassification.
+
+- src/model_utils.py
+Responsible for initializing the AutoModelForTokenClassification from HuggingFace. It maps the integer IDs back to the string tags (label2id/id2label) and handles injecting the LoRA adapters via the PEFT library if LoRA mode is selected.
+
+- src/trainer.py
+Wraps the HuggingFace Trainer API. Implements the core training loop, handles checkpointing to Google Drive, and calculates real-time metrics during evaluation.
+
+- run_training.py
+The central execution script. Parses command line arguments, instantiates the configuration, coordinates the data processing and training steps, and saves the final artifacts.
+
+- test_inference.py
+A standalone testing script that loads the final safetensors weights and tokenizer. It provides an interactive terminal loop allowing users to input raw sentences, passing them through the model, and extracting the predicted BIO tags in real-time.
+
+3. Workflow Diagram
+
+[ Raw Text Data ]
+       │
+       ▼
+[ src/data_utils.py ]
+  - Subword Tokenization
+  - BIO Tag Alignment
+  - Dynamic Padding
+       │
+       ▼
+[ src/model_utils.py ]
+  - Initialize flan-t5-small (or base)
+  - Configure Token Classifier Head
+  - (Optional) Inject LoRA Adapters
+       │
+       ▼
+[ src/trainer.py ]
+  - HuggingFace Trainer
+  - GPU Optimization
+  - Model Checkpointing
+       │
+       ▼
+[ Saved Model Artifacts ]
+  - pytorch_model.bin / safetensors
+  - config.json
+  - tokenizer.json
+       │
+       ▼
+[ test_inference.py ]
+  - Load Weights
+  - Interactive User Input
+  - Output NER Predictions
+
+4. Execution Pipeline
+To replicate training, ensure the data directory is populated and execute:
+$ python run_training.py --mode full
+
+To run the interactive inference loop:
+$ python test_inference.py
